@@ -4,19 +4,19 @@
 \alias{NetworkMotif}
 \title{Estimating the uncertainty of a specified network}
 \usage{
-NetworkMotif(Gamma, Gamma_Pst)
+NetworkMotif(Gamma, GammaPst)
 }
 \arguments{
 \item{Gamma}{A matrix of dimension p * p that signifies a specific network structure among the response variables, where p represents the number of response variables. This matrix is the focus of uncertainty quantification.}
 
-\item{Gamma_Pst}{An array of dimension p * p * n_pst, where n_pst is the number of posterior samples and p denotes the number of response variables. It comprises the posterior samples of the causal network among the response variables. This input might be obtained from the RGM function. Initially, execute the RGM function and save the resulting Gamma_Pst. Subsequently, utilize this stored Gamma_Pst as input for this function.}
+\item{GammaPst}{An array of dimension p * p * n_pst, where n_pst is the number of posterior samples and p denotes the number of response variables. It comprises the posterior samples of the causal network among the response variables. This input might be obtained from the RGM function. Initially, execute the RGM function and save the resulting GammaPst. Subsequently, utilize this stored GammaPst as input for this function.}
 }
 \value{
 The NetworkMotif function calculates the uncertainty quantification for the provided network structure. A value close to 1 indicates that the given network structure is frequently observed in the posterior samples, while a value close to 0 suggests that the given network structure is rarely observed in the posterior samples.
 }
 \description{
 The NetworkMotif function facilitates uncertainty quantification.
-Specifically, it determines the proportion of posterior samples that contains the given network structure. To use this function, users may use the Gamma_Pst output obtained from the RGM function.
+Specifically, it determines the proportion of posterior samples that contains the given network structure. To use this function, users may use the GammaPst output obtained from the RGM function.
 }
 \examples{
 
@@ -45,25 +45,26 @@ diag(A) = 0
 # Make the network sparse
 A[sample(which(A!=0), length(which(A!=0))/2)] = 0
 
-# Initialize causal interaction matrix between response and instrument variables
-B = matrix(0, p, k)
+# Create D matrix (Indicator matrix where each row corresponds to a response variable
+# and each column corresponds to an instrument variable)
+D = matrix(0, nrow = p, ncol = k)
 
-# Create d vector
-d = c(2, 1, 1)
+# Manually assign values to D matrix
+D[1, 1:2] = 1  # First response variable is influenced by the first 2 instruments
+D[2, 3] = 1    # Second response variable is influenced by the 3rd instrument
+D[3, 4] = 1    # Third response variable is influenced by the 4th instrument
 
 
-# Initialize m
-m = 1
+# Initialize B matrix
+B = matrix(0, p, k)  # Initialize B matrix with zeros
 
-# Calculate B matrix based on d vector
+# Calculate B matrix based on D matrix
 for (i in 1:p) {
-
- # Update ith row of B
- B[i, m:(m + d[i] - 1)] = 1
-
- # Update m
- m = m + d[i]
-
+  for (j in 1:k) {
+    if (D[i, j] == 1) {
+      B[i, j] = 1  # Set B[i, j] to 1 if D[i, j] is 1
+    }
+  }
 }
 
 Sigma = diag(p)
@@ -86,11 +87,11 @@ for (i in 1:n) {
 }
 
 
-# Apply RGM on individual level data for Threshold Prior
-Output = RGM(X = X, Y = Y, d = c(2, 1, 1), prior = "Threshold")
+# Apply RGM on individual level data with Spike and Slab Prior
+Output = RGM(X = X, Y = Y, D = D, prior = "Spike and Slab")
 
-# Store Gamma_Pst
-Gamma_Pst = Output$Gamma_Pst
+# Store GammaPst
+GammaPst = Output$GammaPst
 
 # Define a function to create smaller arrowheads
 smaller_arrowheads = function(graph) {
@@ -98,18 +99,23 @@ smaller_arrowheads = function(graph) {
     return(graph)
 }
 
+
+# Plot the true graph structure between response variables
+plot(smaller_arrowheads(igraph::graph_from_adjacency_matrix((A != 0) * 1,
+  mode = "directed")), layout = igraph::layout_in_circle, main = "True Graph")
+
 # Start with a random subgraph
 Gamma = matrix(0, nrow = p, ncol = p)
 Gamma[2, 1] = 1
 
 # Plot the subgraph to get an idea about the causal network
-plot(smaller_arrowheads(igraph::graph.adjacency(Gamma,
+plot(smaller_arrowheads(igraph::graph_from_adjacency_matrix(Gamma,
          mode = "directed")), layout = igraph::layout_in_circle,
             main = "Subgraph")
 
 
 # Do uncertainty quantification for the subgraph
-NetworkMotif(Gamma = Gamma, Gamma_Pst = Gamma_Pst)
+NetworkMotif(Gamma = Gamma, GammaPst = GammaPst)
 
 
 
