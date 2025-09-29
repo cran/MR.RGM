@@ -1,11 +1,11 @@
-bea7f2a25be4044f976c0aa52650a49e *DESCRIPTION
+895732d62f0d06b5ca48226440bdbc0b *DESCRIPTION
 3ca90194ce47ccc6e6b7f5044fd5668b *NAMESPACE
 dfac644f47410c84b94acb8468e2a6d3 *R/CausalNetwork.R
 d0c55311af71efa00377f94d7ba9cccb *R/CppNamespace.R
 3eb4cde1196e162cddbc74c5b53ea243 *R/NetworkMotif.R
 0219f9051aba8f9e4644a58153c37b38 *R/RGM.R
 f170aa20cf77bc514d1f709fb37b46de *R/RcppExports.R
-f0f446ba37e1aa78a30d35d816e1db59 *README.md
+27e5d2e55f1929a50d8c9a07e981aa07 *README.md
 7080893e02c49cd296d4424b9be55069 *build/partial.rdb
 a8fa0d15cf84913a89ce038a56ee4253 *man/NetworkMotif.Rd
 55f3fa01fd399cf96c2ac3d50e636f13 *man/RGM.Rd
@@ -22,7 +22,7 @@ bfbbc9b2a41b6a04bfe54430c4d63aaf *man/figures/README-unnamed-chunk-15-1.png
 0d97c8d63d3b4e27cb4f74eed7a26845 *man/figures/README-unnamed-chunk-15-3.png
 9b00d9b0575cfa19016f36ede30aed95 *man/figures/README-unnamed-chunk-8-1.png
 ac31cb2ebbfd1f866a6709c90b3b5bb7 *man/figures/README-unnamed-chunk-8-2.png
-ac75ff554bdca9bbe2bd9a7ef5894d78 *src/Generate.cpp
+99049630777b65ad659cc74ef00dd6bc *src/Generate.cpp
 c89d6b95d18721894ab45341d0fbc7a6 *src/Makevars
 c89d6b95d18721894ab45341d0fbc7a6 *src/Makevars.win
 84631267d442adee7590026f0272bc4b *src/RcppExports.cpp
